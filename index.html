@@ -80,7 +80,7 @@ footer{text-align:center;background:var(--navy);color:#c4b5fd;padding:30px 0 90p
   <input name="wa" type="tel" placeholder="No. WhatsApp (cth 0123456789)" required pattern="[0-9+\- ]{9,15}">
   <input name="emel" type="email" placeholder="Emel" required>
   <input name="anak" placeholder="Nama anak">
-  <button class="btn blue" style="width:100%">Lihat Pakej Saya →</button></form>
+  <button class="btn blue" style="width:100%">Dapatkan Sekarang →</button></form>
  <div id="q3" class="hide" style="text-align:center"><p>✅ Terima kasih! Pakej sesuai untuk anak anda:</p><h3 id="rName"></h3><div class="price" id="rPrice"></div>
   <p id="rNote" style="color:var(--mut)"></p><a class="btn" id="rBtn" target="_blank">Langgan Sekarang →</a></div>
 </div><p class="score" style="margin-top:28px">Lebih <b>SCORE</b> dengan Testpaper!</p></div></section>
@@ -124,7 +124,7 @@ document.querySelectorAll('.shoplink').forEach(a=>a.href='https://shop.testpaper
 const go=(x)=>{fbq('track','InitiateCheckout',{content_name:x.n,value:x.p,currency:'MYR'});window.open(x.u,'_blank')};
 document.getElementById('cards').innerHTML=P.map((x,i)=>`<div class="card">${x.img?`<img src="${x.img}" alt="${x.n}">`:''}<h3>${x.n}</h3><div class="price">RM${x.p} <small>/ langganan</small></div><ul>${x.d.map(t=>`<li>${t}</li>`).join('')}</ul><button class="btn blue" data-i="${i}"></button></div>`).join('');
 // Sebelum 12am: daftar minat (ke kuiz). Lepas 12am: terus beli di shop.
-function setBtns(){document.querySelectorAll('#cards button').forEach(b=>b.textContent=isOpen()?'🛒 Beli Sekarang':'Daftar Minat Dulu')}
+function setBtns(){document.querySelectorAll('#cards button').forEach(b=>b.textContent=isOpen()?'🛒 Beli Sekarang':'Join Waiting List')}
 setBtns();setInterval(setBtns,1000);
 document.querySelectorAll('#cards button').forEach(b=>b.onclick=()=>{if(isOpen())go(P[b.dataset.i]);else{pick(b.dataset.i);document.getElementById('kuiz').scrollIntoView({behavior:'smooth'})}});
 let sel=null;
