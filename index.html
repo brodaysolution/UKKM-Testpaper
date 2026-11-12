@@ -113,8 +113,11 @@ const P = [
 const isOpen=()=>Date.now()>=OPEN;
 const utm=new URLSearchParams(location.search);
 const go=(x)=>{fbq('track','InitiateCheckout',{content_name:x.n,value:x.p,currency:'MYR'});window.open(x.u,'_blank')};
-document.getElementById('cards').innerHTML=P.map((x,i)=>`<div class="card">${x.img?`<img src="${x.img}" alt="${x.n}">`:''}<h3>${x.n}</h3><div class="price">RM${x.p} <small>/ langganan</small></div><ul>${x.d.map(t=>`<li>${t}</li>`).join('')}</ul><button class="btn blue" data-i="${i}">${isOpen()?'Langgan Sekarang':'Daftar Minat Dulu'}</button></div>`).join('');
-document.querySelectorAll('#cards button').forEach(b=>b.onclick=()=>{const x=P[b.dataset.i];if(isOpen()&&localStorage.getItem('lead'))go(x);else{pick(b.dataset.i);location.hash='kuiz'}});
+document.getElementById('cards').innerHTML=P.map((x,i)=>`<div class="card">${x.img?`<img src="${x.img}" alt="${x.n}">`:''}<h3>${x.n}</h3><div class="price">RM${x.p} <small>/ langganan</small></div><ul>${x.d.map(t=>`<li>${t}</li>`).join('')}</ul><button class="btn blue" data-i="${i}"></button></div>`).join('');
+// Sebelum 12am: daftar minat (ke kuiz). Lepas 12am: terus beli di shop.
+function setBtns(){document.querySelectorAll('#cards button').forEach(b=>b.textContent=isOpen()?'🛒 Beli Sekarang':'Daftar Minat Dulu')}
+setBtns();setInterval(setBtns,1000);
+document.querySelectorAll('#cards button').forEach(b=>b.onclick=()=>{if(isOpen())go(P[b.dataset.i]);else{pick(b.dataset.i);document.getElementById('kuiz').scrollIntoView({behavior:'smooth'})}});
 let sel=null;
 const opts=document.getElementById('opts');
 opts.innerHTML=P.map((x,i)=>`<button data-i="${i}">${x.n.replace('UKKM Khas ','')}</button>`).join('');
