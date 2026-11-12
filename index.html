@@ -53,7 +53,7 @@ footer{text-align:center;background:var(--navy);color:#c4b5fd;padding:30px 0 90p
 @media(max-width:480px){.opts{grid-template-columns:1fr}.nav img{height:42px}}
 </style></head><body>
 
-<div class="nav"><div class="w"><a href="https://shop.testpaper.com.my/?code=DIGI002" target="_blank"><img src="img/logo.png" alt="Testpaper.com.my"></a><a class="btn" href="#kuiz">Daftar Sekarang</a></div></div>
+<div class="nav"><div class="w"><a class="shoplink" href="https://shop.testpaper.com.my/?code=DIGI002" target="_blank"><img src="img/logo.png" alt="Testpaper.com.my"></a><a class="btn" href="#kuiz">Daftar Sekarang</a></div></div>
 
 <header><div class="w"><div class="txt">
 <span class="tag">IBU BAPA TAHUN 6</span>
@@ -94,7 +94,7 @@ footer{text-align:center;background:var(--navy);color:#c4b5fd;padding:30px 0 90p
 <details><summary>Ada soalan lain?</summary><p>Jangan risau, kami sedia membantu! <a href="https://wa.me/60127976184?text=Hai%2C%20saya%20dari%20website%20UKKM%20Testpaper.%20Saya%20ada%20soalan%20tentang%20Simulasi%20UKKM." target="_blank" style="color:#16a34a;font-weight:700">💬 WhatsApp kami di +60 12-797 6184</a></p></details>
 </div></section>
 
-<footer><a href="https://shop.testpaper.com.my/?code=DIGI002" target="_blank"><img src="img/logo.png" alt="Testpaper"></a><p>© 2026 Testpaper.com.my · Lebih SCORE dengan Testpaper!</p></footer>
+<footer><a class="shoplink" href="https://shop.testpaper.com.my/?code=DIGI002" target="_blank"><img src="img/logo.png" alt="Testpaper"></a><p>© 2026 Testpaper.com.my · Lebih SCORE dengan Testpaper!</p></footer>
 <a class="wa" href="https://wa.me/60127976184?text=Hai%2C%20saya%20dari%20website%20UKKM%20Testpaper.%20Saya%20nak%20tahu%20tentang%20Simulasi%20UKKM." target="_blank">💬 WhatsApp</a>
 
 <script>
@@ -112,6 +112,15 @@ const P = [
 ];
 const isOpen=()=>Date.now()>=OPEN;
 const utm=new URLSearchParams(location.search);
+// ===== KOD AGENT =====
+// Link agent: https://ukkm.testpaper.com/?code=KODAGENT  (tanpa ?code= guna DIGI002)
+// Kod diingat dalam browser, jadi kalau pelawat datang semula tanpa ?code= masih ikut agent sama.
+const DEFAULT_CODE='DIGI002';
+let AGENT=(utm.get('code')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,30);
+try{if(AGENT)localStorage.setItem('agent',AGENT);else AGENT=localStorage.getItem('agent')||''}catch(_){}
+AGENT=AGENT||DEFAULT_CODE;
+P.forEach(x=>x.u=x.u.replace('code='+DEFAULT_CODE,'code='+encodeURIComponent(AGENT)));
+document.querySelectorAll('.shoplink').forEach(a=>a.href='https://shop.testpaper.com.my/?code='+encodeURIComponent(AGENT));
 const go=(x)=>{fbq('track','InitiateCheckout',{content_name:x.n,value:x.p,currency:'MYR'});window.open(x.u,'_blank')};
 document.getElementById('cards').innerHTML=P.map((x,i)=>`<div class="card">${x.img?`<img src="${x.img}" alt="${x.n}">`:''}<h3>${x.n}</h3><div class="price">RM${x.p} <small>/ langganan</small></div><ul>${x.d.map(t=>`<li>${t}</li>`).join('')}</ul><button class="btn blue" data-i="${i}"></button></div>`).join('');
 // Sebelum 12am: daftar minat (ke kuiz). Lepas 12am: terus beli di shop.
@@ -123,7 +132,7 @@ const opts=document.getElementById('opts');
 opts.innerHTML=P.map((x,i)=>`<button data-i="${i}">${x.n.replace('UKKM Khas ','')}</button>`).join('');
 function pick(i){sel=P[i];opts.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.i==i));document.getElementById('q2').classList.remove('hide')}
 opts.querySelectorAll('button').forEach(b=>b.onclick=()=>pick(b.dataset.i));
-document.getElementById('q2').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);f.append('pakej',sel.n);['utm_source','utm_medium','utm_campaign','fbclid'].forEach(k=>f.append(k,utm.get(k)||''));
+document.getElementById('q2').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);f.append('pakej',sel.n);f.append('agent',AGENT);['utm_source','utm_medium','utm_campaign','fbclid'].forEach(k=>f.append(k,utm.get(k)||''));
  const btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Menghantar...';
  try{if(SHEET_URL)await fetch(SHEET_URL,{method:'POST',body:new URLSearchParams(f),mode:'no-cors'})}catch(_){}
  fbq('track','Lead',{content_name:sel.n,value:sel.p,currency:'MYR'});try{localStorage.setItem('lead','1')}catch(_){}
