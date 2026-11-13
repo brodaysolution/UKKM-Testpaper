@@ -132,10 +132,13 @@ const opts=document.getElementById('opts');
 opts.innerHTML=P.map((x,i)=>`<button data-i="${i}">${x.n.replace('UKKM Khas ','')}</button>`).join('');
 function pick(i){sel=P[i];opts.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.i==i));document.getElementById('q2').classList.remove('hide')}
 opts.querySelectorAll('button').forEach(b=>b.onclick=()=>pick(b.dataset.i));
-document.getElementById('q2').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);f.append('pakej',sel.n);f.append('agent',AGENT);['utm_source','utm_medium','utm_campaign','fbclid'].forEach(k=>f.append(k,utm.get(k)||''));
+document.getElementById('q2').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);f.append('pakej',sel.n);f.append('agent',AGENT);
+ // Data untuk Meta CAPI (dedup dengan pixel guna event_id yang sama)
+ const EID='lead_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);const ck=n=>(document.cookie.match('(^|; )'+n+'=([^;]*)')||[])[2]||'';
+ f.append('event_id',EID);f.append('fbp',ck('_fbp'));f.append('fbc',ck('_fbc')||(utm.get('fbclid')?'fb.1.'+Date.now()+'.'+utm.get('fbclid'):''));f.append('ua',navigator.userAgent);f.append('url',location.href);f.append('value',sel.p);['utm_source','utm_medium','utm_campaign','fbclid'].forEach(k=>f.append(k,utm.get(k)||''));
  const btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Menghantar...';
  try{if(SHEET_URL)await fetch(SHEET_URL,{method:'POST',body:new URLSearchParams(f),mode:'no-cors'})}catch(_){}
- fbq('track','Lead',{content_name:sel.n,value:sel.p,currency:'MYR'});try{localStorage.setItem('lead','1')}catch(_){}
+ fbq('track','Lead',{content_name:sel.n,value:sel.p,currency:'MYR'},{eventID:EID});try{localStorage.setItem('lead','1')}catch(_){}
  document.getElementById('q1').classList.add('hide');e.target.classList.add('hide');document.getElementById('q3').classList.remove('hide');
  rName.textContent=sel.n;rPrice.textContent='RM'+sel.p;
  rNote.textContent=isOpen()?'Pembelian sudah dibuka!':'Pembelian dibuka 13 Nov, 12:00am. Kami akan WhatsApp anda bila dibuka.';
