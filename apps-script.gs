@@ -8,8 +8,9 @@ var TEST_CODE = ''; // isi kod dari Events Manager > Test Events untuk uji; koso
 function doPost(e) {
   var p = e.parameter;
   var ss = SpreadsheetApp.openById('1qBaIZEs44eDkddgbt18QPG8SgC9Xwjd6YG77FaZz5Us');
-  if (p.jenis === 'temujanji') {   // borang dari /nasihat/
-    var tj = ss.getSheetByName('Temu Janji') || ss.insertSheet('Temu Janji');
+  if (p.jenis === 'temujanji') {   // borang dari halatuju.testpaper.com -> Sheet berasingan
+    var tss = SpreadsheetApp.openById('1FsuXEtCoxeoUb-iZJkAhoUIx9t9UKHV_pSyeDhWIBmA');
+    var tj = tss.getSheetByName('Temu Janji') || tss.insertSheet('Temu Janji');
     if (tj.getLastRow() === 0) tj.appendRow(['Masa','Nama Ibu/Bapa','WhatsApp','Emel','Nama Anak','Tahap','Bil. Anak','Sekolah Sasaran','Khidmat','Tarikh','Slot Masa','Catatan','Lokasi','utm_source','utm_medium','utm_campaign','fbclid','Kod Agent','Status']);
     tj.appendRow([new Date(), p.nama, "'" + p.wa, p.emel, p.anak, p.tahap, "'" + p.pax, p.sasaran, p.servis, "'" + p.tarikh, "'" + p.masa, p.catatan, p.lokasi, p.utm_source, p.utm_medium, p.utm_campaign, p.fbclid, p.agent, 'Belum disahkan']);
     return ContentService.createTextOutput('ok');
